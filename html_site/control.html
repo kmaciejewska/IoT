@@ -1,0 +1,149 @@
+<!DOCTYPE html >
+<html>
+<head>
+<title>WiFi controlled LED</title>
+<script src="jquery.js"></script>
+
+</head>
+<body>
+<h2> <i> WiFi Controlled Smart Home using Arduino and ESP8266 </i> </h2>
+<h4> <i> Enter the IP address of ESP8266 </i> </h4>
+<div style="margin: 0; width:400px; height:30px;">
+<FORM NAME="form" ACTION="" METHOD="GET">
+ESP8266 IP Address:
+<INPUT TYPE="text" NAME="inputbox" VALUE="" />
+</FORM>
+</div>
+<h3> Click to toggle LED! </h3>
+<input type="button" NAME="btnledLTop" value="Turn ON Left Top" />
+<input type="button" NAME="btnledLDown" value="Turn ON Left Down" />
+<input type="button" NAME="btnledRigth" value="Turn ON Right" />
+<h3> Click to turn on Disco! </h3>
+<input type="button" NAME="btnDisco" value="Disco Time!" />
+<h3></h3>
+<input type="button" NAME="btnAlarm" value="Alarm On" />
+<input type="button" NAME="btnGarage" value="Garage Open" />
+</body>
+<script>
+$.ajaxSetup({timeout:1000});
+btnledLTop = document.querySelector('input[name="btnledLTop"]');
+btnledLDown = document.querySelector('input[name="btnledLDown"]');
+btnledRigth = document.querySelector('input[name="btnledRigth"]');
+btnDisco = document.querySelector('input[name="btnDisco"]');
+btnAlarm = document.querySelector('input[name="btnAlarm"]');
+btnGarage = document.querySelector('input[name="btnGarage"]');
+
+txt = document.querySelector('p');
+btnledLTop.addEventListener('click', function() { led1(event, 13); });
+btnledLDown.addEventListener('click', function() { led1(event, 12); });
+btnledRigth.addEventListener('click', function() { led1(event, 8); });  
+btnDisco.addEventListener('click', function() { disco(event); });
+btnAlarm.addEventListener('click', function() { alarm(event); });
+btnGarage.addEventListener('click', function() { garage(event); });
+
+function led1(e, pinNum)
+{
+	const button = event.target;
+	var value = 'OFF';
+	if (button.value === 'Turn OFF Left Top') 
+	{
+		value = 'OFF'
+		button.value = 'Turn ON Left Top';
+	} 
+	else if (button.value === 'Turn ON Left Top')
+	{
+		value = 'ON'; 
+		button.value = 'Turn OFF Left Top';
+	}
+	else if (button.value === 'Turn OFF Left Down') 
+	{
+		value = 'OFF';
+		button.value = 'Turn ON Left Down';
+	}
+	else if (button.value === 'Turn ON Left Down')
+	{
+		value = 'ON';
+		button.value = 'Turn OFF Left Down';
+	}
+	else if (button.value === 'Turn OFF Right') 
+	{
+		value = 'OFF';
+		button.value = 'Turn ON Right';
+	}
+	else if (button.value === 'Turn ON Right')
+	{
+		value = 'ON';
+		button.value = 'Turn OFF Right';
+	}
+	
+	pinNum += value;
+	TextVar = form.inputbox.value;
+	ArduinoVar = "http://" + TextVar + ":80/";
+	$.get( ArduinoVar, {led: pinNum});
+	{Connection: close};
+}
+
+function disco(e)
+{
+	const button = event.target;
+	var value = 'OFF';
+	if (button.value === 'Time for Sleep') 
+	{
+		value = 'OFF'
+		button.value = 'Disco Time!';
+	} 
+	else if (button.value === 'Disco Time!')
+	{
+		value = 'ON'; 
+		button.value = 'Time for Sleep';
+	}
+	
+	TextVar = form.inputbox.value;
+	ArduinoVar = "http://" + TextVar + ":80/";
+	$.get( ArduinoVar, {dis: value});
+	{Connection: close};
+}
+
+function alarm(e)
+{
+	const button = event.target;
+	var value = 'OFF';
+	if (button.value === 'Alarm Off') 
+	{
+		value = 'OFF'
+		button.value = 'Alarm On';
+	} 
+	else if (button.value === 'Alarm On')
+	{
+		value = 'ON'; 
+		button.value = 'Alarm Off';
+	}
+	
+	TextVar = form.inputbox.value;
+	ArduinoVar = "http://" + TextVar + ":80/";
+	$.get( ArduinoVar, {alm: value});
+	{Connection: close};
+}
+
+function garage(e)
+{
+	const button = event.target;
+	var value = 'OFF';
+	if (button.value === 'Garage Close') 
+	{
+		value = 'OFF'
+		button.value = 'Garage Open';
+	} 
+	else if (button.value === 'Garage Open')
+	{
+		value = 'ON'; 
+		button.value = 'Garage Close';
+	}
+	
+	TextVar = form.inputbox.value;
+	ArduinoVar = "http://" + TextVar + ":80/";
+	$.get( ArduinoVar, {gar: value});
+	{Connection: close};
+}
+</script>
+</html>
